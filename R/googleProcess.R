@@ -38,6 +38,7 @@ googleCloudVision <- function(imagePath, feature="LABEL_DETECTION", numResults=1
   if (http_error(output)) {
     errorCode <- status_code(output)
     ErrorMessage <- paste0("Query returned error code ",errorCode)
+    print(ErrorMessage)
     dat <- data.table(mid="Error",description=errorCode, score=NA_real_)
   } else {
     # If no error, parse output
