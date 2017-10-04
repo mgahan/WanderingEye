@@ -18,7 +18,7 @@ googleCloudVision <- function(imagePath, feature="LABEL_DETECTION", numResults=1
   # Function to transform image to text (such as Base64 encoding)
   imageToText <- function(imagePath) {
     # Process is different if it is a url or a local message
-    if (stringr::str_count(imagePath, "http")>0) {### its a url!
+    if (imagePath %like% "http") {### its a url!
       content <- RCurl::getBinaryURL(imagePath)
       txt <- RCurl::base64Encode(content, "txt")
     } else {
