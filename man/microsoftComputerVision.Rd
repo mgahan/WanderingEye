@@ -4,10 +4,16 @@
 \alias{microsoftComputerVision}
 \title{Retrieve output from Microsoft Computer Vision API}
 \usage{
-microsoftComputerVision(imagePath)
+microsoftComputerVision(imagePath,
+  MICROSOFT_API_ENDPOINT = Sys.getenv("MICROSOFT_API_ENDPOINT"),
+  MICROSOFT_API_KEY1 = Sys.getenv("MICROSOFT_API_KEY1"))
 }
 \arguments{
 \item{imagePath}{local path, url path, google storage path}
+
+\item{MICROSOFT_API_ENDPOINT}{defaults to Sys.getenv("MICROSOFT_API_ENDPOINT")}
+
+\item{MICROSOFT_API_KEY1}{defaults to Sys.getenv("MICROSOFT_API_KEY1")}
 }
 \description{
 Retrieve output from Microsoft Computer Vision API
