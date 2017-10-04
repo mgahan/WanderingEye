@@ -6,8 +6,8 @@
 #' @export
 #' @examples
 #' microsoftComputerVision(imagePath="https://sports.cbsimg.net/images/blogs/nike-football.jpg")
-#' ImagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
-#' microsoftComputerVision(imagePath=ImagePath)
+#' imagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+#' microsoftComputerVision(imagePath=imagePath)
 
 microsoftComputerVision <- function(imagePath) {
 
