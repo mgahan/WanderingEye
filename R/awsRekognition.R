@@ -22,12 +22,22 @@ awsRekognition <- function(imagePath,
                            AWS_BUCKET=Sys.getenv("AWS_BUCKET"), 
                            AWS_DEFAULT_REGION=Sys.getenv("AWS_DEFAULT_REGION")) {
 
+  # If http image, then download
+  if (imagePath %like% "http") {
+    download.file(url=imagePath, destfile=basename(imagePath))
+  }
+  
   # Upload image
   TMP_DIR <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time())))
   TMP_DIR <- substr(TMP_DIR,1,8)
   AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",basename(ImagePath))
   UploadTxt <- paste0("aws s3 cp ",ImagePath," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
   UploadSys <- system(UploadTxt, intern=TRUE)
+  
+  # If http image, then download
+  if (imagePath %like% "http") {
+    removeFile <- file.remove(basename(imagePath))
+  }
   
   # Code to retrieve image data
   awsCall <- paste0("aws rekognition detect-labels ",
