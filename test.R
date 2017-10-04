@@ -22,6 +22,6 @@ ImagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye
 googleCloudVision(imagePath=ImagePath)
 microsoftComputerVision(imagePath=ImagePath)
 awsRekognition(imagePath=ImagePath)
-clarifaiPredict(imagePath=imagePath)
-IBMWatsonVision(imagePath=imagePath)
+clarifaiPredict(imagePath=ImagePath)
+IBMWatsonVision(imagePath=ImagePath)
 

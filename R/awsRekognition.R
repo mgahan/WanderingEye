@@ -24,19 +24,23 @@ awsRekognition <- function(imagePath,
 
   # If http image, then download
   if (imagePath %like% "http") {
-    download.file(url=imagePath, destfile=basename(imagePath))
+    download.file(url=imagePath, destfile=basename(imagePath),quiet=TRUE)
   }
   
   # Upload image
-  TMP_DIR <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time())))
-  TMP_DIR <- substr(TMP_DIR,1,8)
-  AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",basename(ImagePath))
-  UploadTxt <- paste0("aws s3 cp ",ImagePath," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
-  UploadSys <- system(UploadTxt, intern=TRUE)
-  
-  # If http image, then download
   if (imagePath %like% "http") {
+    TMP_DIR <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time())))
+    TMP_DIR <- substr(TMP_DIR,1,8)
+    AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",basename(imagePath))
+    UploadTxt <- paste0("aws s3 cp ",basename(imagePath)," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
+    UploadSys <- system(UploadTxt, intern=TRUE)
     removeFile <- file.remove(basename(imagePath))
+  } else {
+    TMP_DIR <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time())))
+    TMP_DIR <- substr(TMP_DIR,1,8)
+    AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",basename(imagePath))
+    UploadTxt <- paste0("aws s3 cp ",imagePath," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
+    UploadSys <- system(UploadTxt, intern=TRUE)
   }
   
   # Code to retrieve image data
@@ -48,8 +52,13 @@ awsRekognition <- function(imagePath,
   awsDat[, File := basename(AWS_IMAGE_PATH)]
   
   # Remove Image from S3 bucket
-  RemoveTxt <- gsub(paste0("cp ",ImagePath),"rm",UploadTxt)
-  RemoveSys <- system(RemoveTxt, intern=TRUE)
+  if (imagePath %like% "http") {
+    RemoveTxt <- gsub(paste0("cp ",basename(imagePath)),"rm",UploadTxt)
+    RemoveSys <- system(RemoveTxt, intern=TRUE)
+  } else {
+    RemoveTxt <- gsub(paste0("cp",imagePath),"rm",UploadTxt)
+    RemoveSys <- system(RemoveTxt, intern=TRUE)
+  }
 
   # Return output
   return(awsDat[])
