@@ -42,7 +42,7 @@ IBMWatsonVision <- function(imagePath,
   }
   
   # Parse output
-  parsed <- jsonlite::fromJSON(content(Output, "text"), simplifyVector = FALSE)
+  parsed <- jsonlite::fromJSON(content(Output, "text",encoding="UTF-8"), simplifyVector = FALSE)
   Class <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "class")
   Class[sapply(Class, is.null)] <- NA_character_
   Score <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "score")
