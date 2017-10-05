@@ -56,7 +56,7 @@ awsRekognition <- function(imagePath,
     RemoveTxt <- gsub(paste0("cp ",basename(imagePath)),"rm",UploadTxt)
     RemoveSys <- system(RemoveTxt, intern=TRUE)
   } else {
-    RemoveTxt <- gsub(paste0("cp",imagePath),"rm",UploadTxt)
+    RemoveTxt <- paste0("aws s3 rm s3://",AWS_BUCKET,"/",AWS_IMAGE_PATH)
     RemoveSys <- system(RemoveTxt, intern=TRUE)
   }
 
