@@ -38,6 +38,7 @@ googleCloudVision(imagePath=ImagePath6, feature="TEXT_DETECTION")
 googleCloudVision(imagePath=ImagePath6, feature="DOCUMENT_TEXT_DETECTION")
 googleCloudVision(imagePath=ImagePath5, feature="SAFE_SEARCH_DETECTION")
 googleCloudVision(imagePath=ImagePath5, feature="CROP_HINTS")
+googleCloudVision(imagePath=ImagePath5, feature="IMAGE_PROPERTIES")
 }
 \keyword{image}
 \keyword{processing}

@@ -26,6 +26,7 @@
 #' googleCloudVision(imagePath=ImagePath6, feature="DOCUMENT_TEXT_DETECTION")
 #' googleCloudVision(imagePath=ImagePath5, feature="SAFE_SEARCH_DETECTION")
 #' googleCloudVision(imagePath=ImagePath5, feature="CROP_HINTS")
+#' googleCloudVision(imagePath=ImagePath5, feature="IMAGE_PROPERTIES")
 
 googleCloudVision <- function(imagePath, feature="LABEL_DETECTION", numResults=10, API_KEY=Sys.getenv("GCLOUD_VISION_API_KEY")) {
 
@@ -204,6 +205,25 @@ googleCloudVision <- function(imagePath, feature="LABEL_DETECTION", numResults=1
         # If no error, parse output
         parsed <- jsonlite::fromJSON(content(output, "text"), simplifyVector = FALSE)
         dat <- rbindlist(lapply(parsed$responses[[1]]$cropHintsAnnotation$cropHints, as.data.table), fill=TRUE)
+      }
+  } else if (feature=="IMAGE_PROPERTIES") {
+      # Transform image to text (such as Base64 encoding)
+      txt <- imageToText(imagePath=imagePath)
+      body <- paste0('{  "requests": [    {   "image": { "content": "',txt,'" }, "features": [  { "type": "',feature,'"} ]  }    ]}')
+    
+      # Extract results for Google Cloud Vision
+      output <- POST(paste0("https://vision.googleapis.com/v1/images:annotate?key=",API_KEY), body=body)
+    
+      # Search if output returned an error or not
+      if (http_error(output)) {
+        errorCode <- status_code(output)
+        ErrorMessage <- paste0("Query returned error code ",errorCode)
+        print(ErrorMessage)
+        dat <- data.table(mid="Error",description=errorCode, score=NA_real_)
+      } else {
+        # If no error, parse output
+        parsed <- jsonlite::fromJSON(content(output, "text"), simplifyVector = FALSE)
+        dat <- rbindlist(lapply(parsed$responses[[1]]$imagePropertiesAnnotation$dominantColors$colors, as.data.table), fill=TRUE)
       }
   } else {
     stop("Choose correct feature")
