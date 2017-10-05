@@ -46,7 +46,7 @@ awsRekognition <- function(imagePath,
   }
   
   # Download target image
-  if (targetPath %like% "http" & feature=="compare-faces") {
+  if (feature=="compare-faces") {
     download.file(url=targetPath, destfile=basename(targetPath),quiet=TRUE)
   }
   
