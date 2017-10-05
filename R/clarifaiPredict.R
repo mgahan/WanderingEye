@@ -23,7 +23,7 @@ clarifaiPredict <- function(imagePath, CLARIFAI_API_KEY=Sys.getenv("CLARIFAI_API
   } else {
     imageBin = readBin(imagePath, "raw", file.info(imagePath)[1, "size"])
     imageBase64 = base64Encode(imageBin, "character")
-    ClarifaiLocalTxt <- paste0("bash ./inst/Scripts/CallClarifai.sh ",CLARIFAI_API_KEY," ",imageBase64," base64")
+    ClarifaiLocalTxt <- paste0("bash ",ScriptPath," ",CLARIFAI_API_KEY," ",imageBase64," base64")
     ClarifaiLocalSys <- system(ClarifaiLocalTxt, intern=TRUE, ignore.stderr = TRUE)
     Output <- fromJSON(txt=ClarifaiLocalSys)
   }
