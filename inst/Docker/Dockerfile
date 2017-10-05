@@ -8,7 +8,7 @@ MAINTAINER "Mike Gahan" michael.gahan@gmail.com
 ENV DEBIAN_FRONTEND noninteractive
 
 ## Document last time updated
-ENV LAST_UPDATE=2017-10-04
+ENV LAST_UPDATE=2017-10-05
 
 ## Update & upgrade
 RUN apt-get update && \
@@ -36,7 +36,7 @@ RUN apt-get install -y \
     pandoc \
     pandoc-citeproc \
     libcurl4-gnutls-dev \
-    nano \
+    procps \
     curl \
     p7zip-full \
     aptitude \
@@ -76,7 +76,7 @@ CMD ["/init"]
 # Build
 # docker build -t mgahan/wanderingeye:latest .
 # docker run -it --rm mgahan/wanderingeye:latest /bin/bash
-# DATE=20171004
+# DATE=20171005
 # docker tag mgahan/wanderingeye:latest mgahan/wanderingeye:$DATE
 # docker login --username=mgahan
 # docker push mgahan/wanderingeye:latest
