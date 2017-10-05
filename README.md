@@ -14,7 +14,7 @@ A **R** package that allows the user to capture classification data from the fol
 
 Due to all the different APIs involved in this project, it is best to run the package from a 
 Docker container. If you are not familiar with Docker, don't sweat it. Docker makes running
-apps like this EASISER, not harder. Docker can be installed from most major platforms and the
+apps like this **EASIER**, not harder. Docker can be installed from most major platforms and the
 link below can walk you through the installation process.
 
 https://www.docker.com/community-edition
