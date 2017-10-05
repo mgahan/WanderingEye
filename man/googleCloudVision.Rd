@@ -28,7 +28,7 @@ ImagePath2 <- "http://ohscurrent.org/wp-content/uploads/2015/09/domus-01-google.
 ImagePath3 <- "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg"
 ImagePath4 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
 ImagePath5 <- "http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png"
-ImagePath6 <- "TextSample.png"
+ImagePath6 <- system.file("ImageTests", "TextSample.png", package="WanderingEye")
 googleCloudVision(imagePath=ImagePath1, feature="LABEL_DETECTION")
 googleCloudVision(imagePath=ImagePath2, feature="LOGO_DETECTION")
 googleCloudVision(imagePath=ImagePath3, feature="LANDMARK_DETECTION")

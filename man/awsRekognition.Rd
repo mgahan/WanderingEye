@@ -4,13 +4,19 @@
 \alias{awsRekognition}
 \title{Retrieve output from AWS Rekognition}
 \usage{
-awsRekognition(imagePath, AWS_ACCESS_KEY_ID = Sys.getenv("AWS_ACCESS_KEY_ID"),
+awsRekognition(imagePath, targetPath = NULL, feature = "detect-labels",
+  AWS_ACCESS_KEY_ID = Sys.getenv("AWS_ACCESS_KEY_ID"),
   AWS_SECRET_ACCESS_KEY = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
   AWS_BUCKET = Sys.getenv("AWS_BUCKET"),
   AWS_DEFAULT_REGION = Sys.getenv("AWS_DEFAULT_REGION"))
 }
 \arguments{
 \item{imagePath}{path to image}
+
+\item{targetPath}{target image for the "compare-faces" features}
+
+\item{feature}{defaults to "detect-labels","detect-faces","compare-faces",
+"recognize-celebrities","detect-moderation-labels"}
 
 \item{AWS_ACCESS_KEY_ID}{defauts to Sys.getenv("AWS_ACCESS_KEY_ID")}
 
@@ -26,10 +32,18 @@ Retrieve output from AWS Rekognition
 \examples{
 imagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
 awsRekognition(imagePath=imagePath,
+               targetPath=NULL,
+               feature="detect-labels",
                AWS_ACCESS_KEY_ID=Sys.getenv("AWS_ACCESS_KEY_ID"), 
                AWS_SECRET_ACCESS_KEY=Sys.getenv("AWS_SECRET_ACCESS_KEY"), 
                AWS_BUCKET=Sys.getenv("AWS_BUCKET"), 
                AWS_DEFAULT_REGION=Sys.getenv("AWS_DEFAULT_REGION"))
+ImagePath1 <- "http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png"
+ImagePath2 <- "https://cdn-s3.si.com/s3fs-public/teams/basketball/nba/players/214152-300x300.png"
+awsRekognition(imagePath=ImagePath1, feature="detect-labels")
+awsRekognition(imagePath=ImagePath1, feature="detect-faces")
+awsRekognition(imagePath=ImagePath1, feature="recognize-celebrities")
+awsRekognition(imagePath=ImagePath1, targetPath=ImagePath2, feature="compare-faces")
 }
 \keyword{image}
 \keyword{processing}
