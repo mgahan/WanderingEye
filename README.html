@@ -129,19 +129,42 @@ $(document).ready(function () {
 <li>IBM Watson Visual Recognition (<a href="https://www.ibm.com/watson/services/visual-recognition/" class="uri">https://www.ibm.com/watson/services/visual-recognition/</a>)</li>
 <li>ClarifAI (<a href="https://www.clarifai.com/" class="uri">https://www.clarifai.com/</a>)</li>
 </ul>
-<div id="install" class="section level2">
-<h2>Install</h2>
-<div id="docker" class="section level3">
-<h3>Docker</h3>
-<p>Due to all the different APIs involved in this project, it is best to run the package from a Docker container. If you are not familiar with Docker, don’t sweat it. Docker makes running apps like this EASISER, not harder. Docker can be installed from most major platforms and the link below can walk you through the installation process.</p>
-<p><a href="https://www.docker.com/community-edition" class="uri">https://www.docker.com/community-edition</a></p>
-</div>
-<div id="api-keys" class="section level3">
-<h3>API Keys</h3>
+<div id="api-keys" class="section level2">
+<h2>API Keys</h2>
 <p>A major component of getting results from these APIs is to go through the process of creating accounts and receiving API KEYS from each of the vendors. If you only want to use a couple of these, don’t sweat it. You only need the API KEYS for the output you want.</p>
 </div>
-<div id="docker-container" class="section level3">
-<h3>Docker Container</h3>
+<div id="install" class="section level2">
+<h2>Install</h2>
+<div id="normal-way" class="section level3">
+<h3>Normal way</h3>
+<p>Since this package connects to various APIs, it does have some external dependencies via the terminal. It depends on Ruby and the AWS Command Line Interface (<a href="http://docs.aws.amazon.com/cli/latest/userguide/installing.html" class="uri">http://docs.aws.amazon.com/cli/latest/userguide/installing.html</a>).</p>
+<div id="ubuntu" class="section level4">
+<h4>Ubuntu</h4>
+<pre class="{bash}"><code>sudo apt-get install python-pip
+sudo pip install awscli
+sudo apt-get install ruby-full
+sudo R -e 'devtools::install_github(&quot;mgahan/WanderingEye&quot;)'</code></pre>
+</div>
+<div id="mac-osx" class="section level4">
+<h4>Mac OSX</h4>
+<pre class="{bash}"><code>sudo easy_install pip
+sudo pip install awscli
+sudo brew install ruby
+sudo R -e 'devtools::install_github(&quot;mgahan/WanderingEye&quot;)'</code></pre>
+</div>
+<div id="windows" class="section level4">
+<h4>Windows</h4>
+<p>This code should be able to work on Windows, but I am unable to test on that platform.</p>
+</div>
+</div>
+<div id="docker-way" class="section level3">
+<h3>Docker Way</h3>
+<p>Due to all the different APIs involved in this project, it is best to run the package from a Docker container. If you are not familiar with Docker, don’t sweat it. Docker makes running apps like this <strong>EASIER</strong>, not harder. Docker can be installed from most major platforms and the link below can walk you through the installation process.</p>
+<p><a href="https://www.docker.com/community-edition" class="uri">https://www.docker.com/community-edition</a></p>
+<p>Link to <strong>WanderingEye</strong> docker hub page:</p>
+<p><a href="https://hub.docker.com/r/mgahan/wanderingeye/" class="uri">https://hub.docker.com/r/mgahan/wanderingeye/</a></p>
+<div id="docker-container" class="section level4">
+<h4>Docker Container</h4>
 <p>Once you have the API KEYS you need, you are now ready to create the <code>docker</code> container using the <code>mgahan/wanderingeye</code> Docker repo.</p>
 <pre class="{bash}"><code>docker run -it --rm \
   -e &quot;GCLOUD_VISION_API_KEY&quot;=&quot;SGDFKLJGBFKLBG12345&quot; \
@@ -156,6 +179,7 @@ $(document).ready(function () {
   -e &quot;IBM_WATSON_API&quot;=&quot;983fnjklndknlsjnfsdlnksfln2&quot; \
   -e &quot;IBM_WATSON_VERSION&quot;=&quot;2016-05-20&quot; \
 mgahan/wanderingeye:latest /usr/local/bin/R</code></pre>
+</div>
 </div>
 </div>
 <div id="processing-images-with-wanderingeye" class="section level2">
@@ -194,8 +218,6 @@ awsRekognition(imagePath=DiskImagePath)</code></pre>
 <h3>Google Cloud Vision</h3>
 <pre class="{r}"><code>googleCloudVision(imagePath=URLImagePath)
 googleCloudVision(imagePath=DiskImagePath)</code></pre>
-<pre><code>       mid description     score</code></pre>
-<p>1: /m/01226z football 0.9423397 2: /m/0dpm1v ball 0.8754095 3: /m/018xm ball 0.8611005 4: /m/08t9c_ grass 0.8366866 5: /m/05xknm pallone 0.7358954 6: /m/06ntj sports 0.5816362 7: /m/02vx4 soccer 0.5780240 8: /m/03x045 team sport 0.5462599 9: /m/0bmgjqz sport venue 0.5377137 10: /m/020m7t ball game 0.5155140</p>
 </div>
 <div id="microsoft-computer-vision" class="section level3">
 <h3>Microsoft Computer Vision</h3>
@@ -219,7 +241,7 @@ clarifaiPredict(imagePath=DiskImagePath)</code></pre>
 </div>
 <div id="what-it-does" class="section level2">
 <h2>What it does</h2>
-<p>WanderEye is a universal service layer that compiles the output from four computer vision APIs: Google Cloud Vision, Amazon Rekognition, ClarifAI, Microsoft Computer Vision, and IBM Watson. The main end goal of this product is to create a code pipeline for camera trap users or existing camera trap analysis apps such as SMART to query four image recognition APIs to receive compiled species identification data for large file sets. We provide also “composite output” which ranks the results across the four engines based on the certainty of the ID and the specificity of the output. Today, we present a demo that allows side by comparison of these computer vision algorithms for pre-processed training images.</p>
+<p>WanderingEye is a universal service layer that compiles the output from four computer vision APIs: Google Cloud Vision, Amazon Rekognition, ClarifAI, Microsoft Computer Vision, and IBM Watson. The main end goal of this product is to create a code pipeline for camera trap users or existing camera trap analysis apps such as SMART to query four image recognition APIs to receive compiled species identification data for large file sets. We provide also “composite output” which ranks the results across the four engines based on the certainty of the ID and the specificity of the output. Today, we present a demo that allows side by comparison of these computer vision algorithms for pre-processed training images.</p>
 </div>
 </div>
 

@@ -8,9 +8,43 @@ A **R** package that allows the user to capture classification data from the fol
 - IBM Watson Visual Recognition (https://www.ibm.com/watson/services/visual-recognition/)
 - ClarifAI (https://www.clarifai.com/)
 
+## API Keys
+
+A major component of getting results from these APIs is to go through the process of creating
+accounts and receiving API KEYS from each of the vendors. If you only want to use a couple of
+these, don't sweat it. You only need the API KEYS for the output you want.
+
 ## Install
 
-### Docker
+### Normal way
+
+Since this package connects to various APIs, it does have some external dependencies via the terminal.
+It depends on Ruby and the AWS Command Line Interface 
+(http://docs.aws.amazon.com/cli/latest/userguide/installing.html).
+
+#### Ubuntu 
+
+```{bash}
+sudo apt-get install python-pip
+sudo pip install awscli
+sudo apt-get install ruby-full
+sudo R -e 'devtools::install_github("mgahan/WanderingEye")'
+```
+
+#### Mac OSX
+
+```{bash}
+sudo easy_install pip
+sudo pip install awscli
+sudo brew install ruby
+sudo R -e 'devtools::install_github("mgahan/WanderingEye")'
+```
+
+#### Windows
+
+This code should be able to work on Windows, but I am unable to test on that platform.
+
+### Docker Way
 
 Due to all the different APIs involved in this project, it is best to run the package from a 
 Docker container. If you are not familiar with Docker, don't sweat it. Docker makes running
@@ -23,13 +57,7 @@ Link to **WanderingEye** docker hub page:
 
 https://hub.docker.com/r/mgahan/wanderingeye/
 
-### API Keys
-
-A major component of getting results from these APIs is to go through the process of creating
-accounts and receiving API KEYS from each of the vendors. If you only want to use a couple of
-these, don't sweat it. You only need the API KEYS for the output you want.
-
-### Docker Container
+#### Docker Container
 
 Once you have the API KEYS you need, you are now ready to create the `docker` container
 using the `mgahan/wanderingeye` Docker repo.
