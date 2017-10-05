@@ -23,7 +23,21 @@ googleCloudVision(imagePath, feature = "LABEL_DETECTION", numResults = 10,
 Retrieve output from Google Cloud Vision
 }
 \examples{
-googleCloudVision(imagePath="https://sports.cbsimg.net/images/blogs/nike-football.jpg")
+ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
+ImagePath2 <- "http://ohscurrent.org/wp-content/uploads/2015/09/domus-01-google.jpg"
+ImagePath3 <- "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg"
+ImagePath4 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+ImagePath5 <- "http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png"
+ImagePath6 <- "TextSample.png"
+googleCloudVision(imagePath=ImagePath1, feature="LABEL_DETECTION")
+googleCloudVision(imagePath=ImagePath2, feature="LOGO_DETECTION")
+googleCloudVision(imagePath=ImagePath3, feature="LANDMARK_DETECTION")
+googleCloudVision(imagePath=ImagePath4, feature="WEB_DETECTION")
+googleCloudVision(imagePath=ImagePath5, feature="FACE_DETECTION")
+googleCloudVision(imagePath=ImagePath6, feature="TEXT_DETECTION")
+googleCloudVision(imagePath=ImagePath6, feature="DOCUMENT_TEXT_DETECTION")
+googleCloudVision(imagePath=ImagePath5, feature="SAFE_SEARCH_DETECTION")
+googleCloudVision(imagePath=ImagePath5, feature="CROP_HINTS")
 }
 \keyword{image}
 \keyword{processing}
