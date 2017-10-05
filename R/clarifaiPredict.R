@@ -34,7 +34,7 @@ clarifaiPredict <- function(imagePath, CLARIFAI_API_KEY=Sys.getenv("CLARIFAI_API
   
   # Check if there was an error and return output
   outList <- list(StatusOutput,DataOutput)
-  names(outList) <- c("Status","Date")
+  names(outList) <- c("Status","Data")
   return(outList)
 
   # Return output
