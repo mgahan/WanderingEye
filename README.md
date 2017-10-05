@@ -19,6 +19,10 @@ link below can walk you through the installation process.
 
 https://www.docker.com/community-edition
 
+Link to **WanderingEye** docker hub page:
+
+https://hub.docker.com/r/mgahan/wanderingeye/
+
 ### API Keys
 
 A major component of getting results from these APIs is to go through the process of creating
