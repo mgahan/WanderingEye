@@ -26,11 +26,20 @@ clarifaiPredict <- function(imagePath, CLARIFAI_API_KEY=Sys.getenv("CLARIFAI_API
                  body=txt,
                  add_headers("Authorization"=paste0("Key ",Sys.getenv("CLARIFAI_API_KEY")),"Content-Type"="application/json"))
   
-  # Parse output
-  parsed <- jsonlite::fromJSON(content(output, "text"), simplifyVector = FALSE)
-  outDat <- rbindlist(lapply(parsed$outputs[[1]]$data$concepts, as.data.table), fill=TRUE)
-  outDat[, File := imagePath]
-
+  # Search if output returned an error or not
+  if (http_error(output)) {
+    errorCode <- status_code(output)
+    ErrorMessage <- paste0("Query returned error code ",errorCode)
+    print(ErrorMessage)
+    outDat <- data.table(id=NA_character_,name=NA_character_,value=NA_real_,app_id=NA_character_)
+    outDat[, File := imagePath]
+  } else {
+    # Parse output
+    parsed <- jsonlite::fromJSON(content(output, "text"), simplifyVector = FALSE)
+    outDat <- rbindlist(lapply(parsed$outputs[[1]]$data$concepts, as.data.table), fill=TRUE)
+    outDat[, File := imagePath]
+  }
+  
   # Return output
   return(outDat[])
 }
