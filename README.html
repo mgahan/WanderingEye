@@ -137,19 +137,17 @@ $(document).ready(function () {
 <h2>Install</h2>
 <div id="normal-way" class="section level3">
 <h3>Normal way</h3>
-<p>Since this package connects to various APIs, it does have some external dependencies via the terminal. It depends on Ruby and the AWS Command Line Interface (<a href="http://docs.aws.amazon.com/cli/latest/userguide/installing.html" class="uri">http://docs.aws.amazon.com/cli/latest/userguide/installing.html</a>).</p>
+<p>Since this package connects to various APIs, it does have some external dependencies via the terminal. The <code>AWS Reognition</code> part of the package depends on the AWS Command Line Interface (<a href="http://docs.aws.amazon.com/cli/latest/userguide/installing.html" class="uri">http://docs.aws.amazon.com/cli/latest/userguide/installing.html</a>).</p>
 <div id="ubuntu" class="section level4">
 <h4>Ubuntu</h4>
 <pre class="{bash}"><code>sudo apt-get install python-pip
 sudo pip install awscli
-sudo apt-get install ruby-full
 sudo R -e 'devtools::install_github(&quot;mgahan/WanderingEye&quot;)'</code></pre>
 </div>
 <div id="mac-osx" class="section level4">
 <h4>Mac OSX</h4>
 <pre class="{bash}"><code>sudo easy_install pip
 sudo pip install awscli
-sudo brew install ruby
 sudo R -e 'devtools::install_github(&quot;mgahan/WanderingEye&quot;)'</code></pre>
 </div>
 <div id="windows" class="section level4">
@@ -166,19 +164,31 @@ sudo R -e 'devtools::install_github(&quot;mgahan/WanderingEye&quot;)'</code></pr
 <div id="docker-container" class="section level4">
 <h4>Docker Container</h4>
 <p>Once you have the API KEYS you need, you are now ready to create the <code>docker</code> container using the <code>mgahan/wanderingeye</code> Docker repo.</p>
-<pre class="{bash}"><code>docker run -it --rm \
-  -e &quot;GCLOUD_VISION_API_KEY&quot;=&quot;SGDFKLJGBFKLBG12345&quot; \
-  -e &quot;AWS_ACCESS_KEY_ID&quot;=&quot;AKVDNVKBFKN123&quot; \
-  -e &quot;AWS_SECRET_ACCESS_KEY&quot;=&quot;AKFJLDNkjflaldfld132&quot; \
-  -e &quot;AWS_BUCKET&quot;=&quot;test-bucket&quot; \
-  -e &quot;AWS_DEFAULT_REGION&quot;=&quot;us-west-2&quot; \
-  -e &quot;MICROSOFT_API_ENDPOINT&quot;=&quot;https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/&quot; \
-  -e &quot;MICROSOFT_API_KEY1&quot;=&quot;940nsdgnfkjgnkjgnkfmldnlds&quot; \
-  -e &quot;MICROSOFT_API_KEY2&quot;=&quot;3904nmdnfdsnfldsnflsdfnsdlfndlsk&quot; \
-  -e &quot;CLARIFAI_API_KEY&quot;=&quot;rndvlsnvlmvfnkffnmnfk3&quot; \
-  -e &quot;IBM_WATSON_API&quot;=&quot;983fnjklndknlsjnfsdlnksfln2&quot; \
-  -e &quot;IBM_WATSON_VERSION&quot;=&quot;2016-05-20&quot; \
-mgahan/wanderingeye:latest /usr/local/bin/R</code></pre>
+<div id="create-docker-container" class="section level5">
+<h5>Create Docker container</h5>
+<pre class="{bash}"><code>containerID=$(docker run -it -d -p 8787:8787 mgahan/wanderingeye:latest)</code></pre>
+</div>
+<div id="add-api-keys-as-environmental-variables" class="section level5">
+<h5>Add API Keys as environmental variables</h5>
+<pre class="{bash}"><code>docker exec -it $containerID /bin/bash
+sleep 5
+echo &quot;GCLOUD_VISION_API_KEY&quot;=&quot;SGDFKLJGBFKLBG12345&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;AWS_ACCESS_KEY_ID&quot;=&quot;AKVDNVKBFKN123&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;AWS_SECRET_ACCESS_KEY&quot;=&quot;AKFJLDNkjflaldfld132&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;AWS_BUCKET&quot;=&quot;test-bucket&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;AWS_DEFAULT_REGION&quot;=&quot;us-west-2&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;MICROSOFT_API_ENDPOINT&quot;=&quot;https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;MICROSOFT_API_KEY1&quot;=&quot;940nsdgnfkjgnkjgnkfmldnlds&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;MICROSOFT_API_KEY2&quot;=&quot;3904nmdnfdsnfldsnflsdfnsdlfndlsk&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;CLARIFAI_API_KEY&quot;=&quot;rndvlsnvlmvfnkffnmnfk3&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;IBM_WATSON_API&quot;=&quot;983fnjklndknlsjnfsdlnksfln2&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+echo &quot;IBM_WATSON_VERSION&quot;=&quot;2016-05-20&quot; &gt;&gt; /usr/local/lib/R/etc/Renviron
+exit</code></pre>
+</div>
+<div id="open-up-rstudio-server-container-and-login" class="section level5">
+<h5>Open up RStudio-Server Container and login</h5>
+<pre class="{bash}"><code>open http://$(docker-machine ip):8787</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -211,18 +221,40 @@ DiskImagePath &lt;- system.file(&quot;ImageTests&quot;, &quot;chimney_rock.jpg&q
 </div>
 <div id="aws-rekognition" class="section level3">
 <h3>AWS Rekognition</h3>
-<pre class="{r}"><code>awsRekognition(imagePath=URLImagePath)
-awsRekognition(imagePath=DiskImagePath)</code></pre>
+<pre class="{r}"><code>ImagePath1 &lt;- &quot;http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&quot;
+ImagePath2 &lt;- &quot;https://cdn-s3.si.com/s3fs-public/teams/basketball/nba/players/214152-300x300.png&quot;
+awsRekognition(imagePath=ImagePath1, feature=&quot;detect-labels&quot;)
+awsRekognition(imagePath=ImagePath1, feature=&quot;detect-faces&quot;)
+awsRekognition(imagePath=ImagePath1, feature=&quot;recognize-celebrities&quot;)
+awsRekognition(imagePath=ImagePath1, targetPath=ImagePath2, feature=&quot;compare-faces&quot;)</code></pre>
 </div>
 <div id="google-cloud-vision" class="section level3">
 <h3>Google Cloud Vision</h3>
-<pre class="{r}"><code>googleCloudVision(imagePath=URLImagePath)
-googleCloudVision(imagePath=DiskImagePath)</code></pre>
+<pre class="{r}"><code>ImagePath1 &lt;- &quot;https://sports.cbsimg.net/images/blogs/nike-football.jpg&quot;
+ImagePath2 &lt;- &quot;http://ohscurrent.org/wp-content/uploads/2015/09/domus-01-google.jpg&quot;
+ImagePath3 &lt;- &quot;https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg&quot;
+ImagePath4 &lt;- system.file(&quot;ImageTests&quot;, &quot;chimney_rock.jpg&quot;, package=&quot;WanderingEye&quot;)
+ImagePath5 &lt;- &quot;http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&quot;
+ImagePath6 &lt;- system.file(&quot;ImageTests&quot;, &quot;TextSample.png&quot;, package=&quot;WanderingEye&quot;)
+googleCloudVision(imagePath=ImagePath1, feature=&quot;LABEL_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath2, feature=&quot;LOGO_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath3, feature=&quot;LANDMARK_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath4, feature=&quot;WEB_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath5, feature=&quot;FACE_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath6, feature=&quot;TEXT_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath6, feature=&quot;DOCUMENT_TEXT_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath5, feature=&quot;SAFE_SEARCH_DETECTION&quot;)
+googleCloudVision(imagePath=ImagePath5, feature=&quot;CROP_HINTS&quot;)
+googleCloudVision(imagePath=ImagePath5, feature=&quot;IMAGE_PROPERTIES&quot;)</code></pre>
 </div>
 <div id="microsoft-computer-vision" class="section level3">
 <h3>Microsoft Computer Vision</h3>
-<pre class="{r}"><code>microsoftComputerVision(imagePath=URLImagePath)
-microsoftComputerVision(imagePath=DiskImagePath)</code></pre>
+<pre class="{r}"><code>ImagePath1 &lt;- &quot;https://sports.cbsimg.net/images/blogs/nike-football.jpg&quot;
+ImagePath2 &lt;- system.file(&quot;ImageTests&quot;, &quot;chimney_rock.jpg&quot;, package=&quot;WanderingEye&quot;)
+ImagePath3 &lt;- system.file(&quot;ImageTests&quot;, &quot;HandwrittenNote.jpg&quot;, package=&quot;WanderingEye&quot;)
+microsoftComputerVision(imagePath=ImagePath1, feature=&quot;analyze&quot;)
+microsoftComputerVision(imagePath=ImagePath2, feature=&quot;analyze&quot;)
+microsoftComputerVision(imagePath=ImagePath3, feature=&quot;handwriting&quot;)</code></pre>
 </div>
 <div id="ibm-watson-visual-recognition" class="section level3">
 <h3>IBM Watson Visual Recognition</h3>

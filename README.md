@@ -60,20 +60,34 @@ https://hub.docker.com/r/mgahan/wanderingeye/
 Once you have the API KEYS you need, you are now ready to create the `docker` container
 using the `mgahan/wanderingeye` Docker repo.
 
+##### Create Docker container
+
 ```{bash}
-docker run -it --rm \
-  -e "GCLOUD_VISION_API_KEY"="SGDFKLJGBFKLBG12345" \
-  -e "AWS_ACCESS_KEY_ID"="AKVDNVKBFKN123" \
-  -e "AWS_SECRET_ACCESS_KEY"="AKFJLDNkjflaldfld132" \
-  -e "AWS_BUCKET"="test-bucket" \
-  -e "AWS_DEFAULT_REGION"="us-west-2" \
-  -e "MICROSOFT_API_ENDPOINT"="https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/" \
-  -e "MICROSOFT_API_KEY1"="940nsdgnfkjgnkjgnkfmldnlds" \
-  -e "MICROSOFT_API_KEY2"="3904nmdnfdsnfldsnflsdfnsdlfndlsk" \
-  -e "CLARIFAI_API_KEY"="rndvlsnvlmvfnkffnmnfk3" \
-  -e "IBM_WATSON_API"="983fnjklndknlsjnfsdlnksfln2" \
-  -e "IBM_WATSON_VERSION"="2016-05-20" \
-mgahan/wanderingeye:latest /usr/local/bin/R
+containerID=$(docker run -it -d -p 8787:8787 mgahan/wanderingeye:latest)
+```
+
+##### Add API Keys as environmental variables
+```{bash}
+docker exec -it $containerID /bin/bash
+sleep 5
+echo "GCLOUD_VISION_API_KEY"="SGDFKLJGBFKLBG12345" >> /usr/local/lib/R/etc/Renviron
+echo "AWS_ACCESS_KEY_ID"="AKVDNVKBFKN123" >> /usr/local/lib/R/etc/Renviron
+echo "AWS_SECRET_ACCESS_KEY"="AKFJLDNkjflaldfld132" >> /usr/local/lib/R/etc/Renviron
+echo "AWS_BUCKET"="test-bucket" >> /usr/local/lib/R/etc/Renviron
+echo "AWS_DEFAULT_REGION"="us-west-2" >> /usr/local/lib/R/etc/Renviron
+echo "MICROSOFT_API_ENDPOINT"="https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/" >> /usr/local/lib/R/etc/Renviron
+echo "MICROSOFT_API_KEY1"="940nsdgnfkjgnkjgnkfmldnlds" >> /usr/local/lib/R/etc/Renviron
+echo "MICROSOFT_API_KEY2"="3904nmdnfdsnfldsnflsdfnsdlfndlsk" >> /usr/local/lib/R/etc/Renviron
+echo "CLARIFAI_API_KEY"="rndvlsnvlmvfnkffnmnfk3" >> /usr/local/lib/R/etc/Renviron
+echo "IBM_WATSON_API"="983fnjklndknlsjnfsdlnksfln2" >> /usr/local/lib/R/etc/Renviron
+echo "IBM_WATSON_VERSION"="2016-05-20" >> /usr/local/lib/R/etc/Renviron
+exit
+```
+
+##### Open up RStudio-Server Container and login
+
+```{bash}
+open http://$(docker-machine ip):8787
 ```
 
 ## Processing Images with WanderingEye
