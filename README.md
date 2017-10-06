@@ -19,7 +19,7 @@ these, don't sweat it. You only need the API KEYS for the output you want.
 ### Normal way
 
 Since this package connects to various APIs, it does have some external dependencies via the terminal.
-It depends on Ruby and the AWS Command Line Interface 
+The `AWS Reognition` part of the package depends on the AWS Command Line Interface 
 (http://docs.aws.amazon.com/cli/latest/userguide/installing.html).
 
 #### Ubuntu 
@@ -27,7 +27,6 @@ It depends on Ruby and the AWS Command Line Interface
 ```{bash}
 sudo apt-get install python-pip
 sudo pip install awscli
-sudo apt-get install ruby-full
 sudo R -e 'devtools::install_github("mgahan/WanderingEye")'
 ```
 
@@ -36,7 +35,6 @@ sudo R -e 'devtools::install_github("mgahan/WanderingEye")'
 ```{bash}
 sudo easy_install pip
 sudo pip install awscli
-sudo brew install ruby
 sudo R -e 'devtools::install_github("mgahan/WanderingEye")'
 ```
 
@@ -106,22 +104,44 @@ DiskImagePath <- system.file("ImageTests", "chimney_rock.jpg", package="Wanderin
 ### AWS Rekognition
 
 ```{r}
-awsRekognition(imagePath=URLImagePath)
-awsRekognition(imagePath=DiskImagePath)
+ImagePath1 <- "http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png"
+ImagePath2 <- "https://cdn-s3.si.com/s3fs-public/teams/basketball/nba/players/214152-300x300.png"
+awsRekognition(imagePath=ImagePath1, feature="detect-labels")
+awsRekognition(imagePath=ImagePath1, feature="detect-faces")
+awsRekognition(imagePath=ImagePath1, feature="recognize-celebrities")
+awsRekognition(imagePath=ImagePath1, targetPath=ImagePath2, feature="compare-faces")
 ```
 
 ### Google Cloud Vision
 
 ```{r}
-googleCloudVision(imagePath=URLImagePath)
-googleCloudVision(imagePath=DiskImagePath)
+ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
+ImagePath2 <- "http://ohscurrent.org/wp-content/uploads/2015/09/domus-01-google.jpg"
+ImagePath3 <- "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg"
+ImagePath4 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+ImagePath5 <- "http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png"
+ImagePath6 <- system.file("ImageTests", "TextSample.png", package="WanderingEye")
+googleCloudVision(imagePath=ImagePath1, feature="LABEL_DETECTION")
+googleCloudVision(imagePath=ImagePath2, feature="LOGO_DETECTION")
+googleCloudVision(imagePath=ImagePath3, feature="LANDMARK_DETECTION")
+googleCloudVision(imagePath=ImagePath4, feature="WEB_DETECTION")
+googleCloudVision(imagePath=ImagePath5, feature="FACE_DETECTION")
+googleCloudVision(imagePath=ImagePath6, feature="TEXT_DETECTION")
+googleCloudVision(imagePath=ImagePath6, feature="DOCUMENT_TEXT_DETECTION")
+googleCloudVision(imagePath=ImagePath5, feature="SAFE_SEARCH_DETECTION")
+googleCloudVision(imagePath=ImagePath5, feature="CROP_HINTS")
+googleCloudVision(imagePath=ImagePath5, feature="IMAGE_PROPERTIES")
 ```
 
 ### Microsoft Computer Vision
 
 ```{r}
-microsoftComputerVision(imagePath=URLImagePath)
-microsoftComputerVision(imagePath=DiskImagePath)
+ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
+ImagePath2 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+ImagePath3 <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
+microsoftComputerVision(imagePath=ImagePath1, feature="analyze")
+microsoftComputerVision(imagePath=ImagePath2, feature="analyze")
+microsoftComputerVision(imagePath=ImagePath3, feature="handwriting")
 ```
 
 ### IBM Watson Visual Recognition
