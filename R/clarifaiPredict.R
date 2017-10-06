@@ -12,31 +12,25 @@
 
 clarifaiPredict <- function(imagePath, CLARIFAI_API_KEY=Sys.getenv("CLARIFAI_API_KEY")) {
 
-  # Apply algorithm to local file using bash
-  ScriptPath <- system.file("Scripts", "CallClarifai.sh", package="WanderingEye")
-    
   # Grab output from Clarifai API
   if (imagePath %like% "http") {
-    ClarifaiHTTPTxt <- paste0("bash ",ScriptPath," ",CLARIFAI_API_KEY," ",imagePath," url")
-    ClarifaiHTTPSys <- system(ClarifaiHTTPTxt, intern=TRUE, ignore.stderr = TRUE)
-    Output <- fromJSON(txt=ClarifaiHTTPSys)
+    txt <- paste0('{"inputs":[{"data":{"image":{"url":"',imagePath,'"}}}]}')
   } else {
     imageBin = readBin(imagePath, "raw", file.info(imagePath)[1, "size"])
     imageBase64 = base64Encode(imageBin, "character")
-    ClarifaiLocalTxt <- paste0("bash ",ScriptPath," ",CLARIFAI_API_KEY," ",imageBase64," base64")
-    ClarifaiLocalSys <- system(ClarifaiLocalTxt, intern=TRUE, ignore.stderr = TRUE)
-    Output <- fromJSON(txt=ClarifaiLocalSys)
+    txt <- paste0('{"inputs":[{"data":{"image":{"base64":"',imageBase64,'"}}}]}')
   }
 
-  # Organize Output
-  StatusOutput <- as.data.table(Output$outputs$status)
-  DataOutput <- as.data.table(Output$outputs$data$concepts)
+  # Grab output with POST
+  output <- POST(url="https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs",
+                 body=txt,
+                 add_headers("Authorization"=paste0("Key ",Sys.getenv("CLARIFAI_API_KEY")),"Content-Type"="application/json"))
   
-  # Check if there was an error and return output
-  outList <- list(StatusOutput,DataOutput)
-  names(outList) <- c("Status","Data")
-  return(outList)
+  # Parse output
+  parsed <- jsonlite::fromJSON(content(output, "text"), simplifyVector = FALSE)
+  outDat <- rbindlist(lapply(parsed$outputs[[1]]$data$concepts, as.data.table), fill=TRUE)
+  outDat[, File := imagePath]
 
   # Return output
-  return(outList)
+  return(outDat[])
 }
