@@ -1,6 +1,6 @@
 require 'net/http'
 
-uri = URI('https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Description,Tags')
+uri = URI(ARGV[2])
 #uri.query = URI.encode_www_form({
 #
 #    'language' => 'unk',
