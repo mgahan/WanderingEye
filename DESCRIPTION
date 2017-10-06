@@ -9,6 +9,7 @@ Depends:
     data.table (>= 1.10.4),
     httr,
     RCurl,
+    tools,
     stringr,
     jsonlite
 Description: Extracts image data from Google Cloud, AWS, Microsfot, IBM Watson, ClarifAI

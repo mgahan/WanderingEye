@@ -40,28 +40,33 @@ awsRekognition <- function(imagePath,
     stop("compare-faces needs a non-null targetPath")
   }
   
+  # Create TMP image filenames
+  EXT1 <- tools::file_ext(imagePath)
+  EXT2 <- ifelse(is.null(targetPath), ".jpg", tools::file_ext(targetPath))
+  TMP_FILE1 <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time(),rnorm(1))))
+  TMP_FILE2 <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time(),rnorm(1))))
+  TMP_FILE1 <- paste0(TMP_FILE1,".",EXT1)
+  TMP_FILE2 <- paste0(TMP_FILE2,".",EXT2)
+  TMP_DIR <- substr(TMP_FILE1,1,8)
+  
   # Download source image
   if (imagePath %like% "http") {
-    download.file(url=imagePath, destfile=basename(imagePath),quiet=TRUE)
+    download.file(url=imagePath, destfile=TMP_FILE1,quiet=TRUE)
   }
   
   # Download target image
   if (feature=="compare-faces") {
-    download.file(url=targetPath, destfile=basename(targetPath),quiet=TRUE)
+    download.file(url=targetPath, destfile=TMP_FILE2,quiet=TRUE)
   }
   
   # Upload image
   if (imagePath %like% "http") {
-    TMP_DIR <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time())))
-    TMP_DIR <- substr(TMP_DIR,1,8)
-    AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",basename(imagePath))
-    UploadTxt <- paste0("aws s3 cp ",basename(imagePath)," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
+    AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",TMP_FILE1)
+    UploadTxt <- paste0("aws s3 mv ",TMP_FILE1," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
     UploadSys <- system(UploadTxt, intern=TRUE)
-    removeFile <- file.remove(basename(imagePath))
+    #removeFile <- file.remove(TMP_FILE1)
   } else {
-    TMP_DIR_LNG <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time(),rnorm(1))))
-    TMP_DIR <- substr(TMP_DIR_LNG,1,8)
-    AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",basename(imagePath))
+    AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",TMP_FILE1)
     UploadTxt <- paste0("aws s3 cp ",imagePath," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
     UploadSys <- system(UploadTxt, intern=TRUE)
   }
@@ -69,16 +74,12 @@ awsRekognition <- function(imagePath,
   # Upload source image
   if (feature=="compare-faces") {
     if (targetPath %like% "http") {
-      TMP_DIR <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time())))
-      TMP_DIR <- substr(TMP_DIR,1,8)
-      AWS_IMAGE_PATH_SOURCE <- paste0("Images",TMP_DIR,"/",basename(targetPath))
-      UploadTxt <- paste0("aws s3 cp ",basename(targetPath)," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH_SOURCE)
+      AWS_IMAGE_PATH_SOURCE <- paste0("Images",TMP_DIR,"/",TMP_FILE2)
+      UploadTxt <- paste0("aws s3 mv ",TMP_FILE2," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH_SOURCE)
       UploadSys <- system(UploadTxt, intern=TRUE)
-      removeFile <- file.remove(basename(targetPath))
+      #removeFile <- file.remove(basename(targetPath))
     } else {
-      TMP_DIR_LNG <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time(),rnorm(1))))
-      TMP_DIR <- substr(TMP_DIR_LNG,1,8)
-      AWS_IMAGE_PATH_SOURCE <- paste0("Images",TMP_DIR,"/",basename(targetPath))
+      AWS_IMAGE_PATH_SOURCE <- paste0("Images",TMP_DIR,"/",TMP_FILE2)
       UploadTxt <- paste0("aws s3 cp ",targetPath," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH_SOURCE)
       UploadSys <- system(UploadTxt, intern=TRUE)
     }
@@ -90,71 +91,88 @@ awsRekognition <- function(imagePath,
     awsCall <- paste0("aws rekognition ",feature," ",
                "--image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",
                AWS_IMAGE_PATH,"\"}}'"," --output text")
-    awsDat <- fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0)
+    # if fread has error, it is probably empty
+    awsDat = tryCatch({
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+    }, error = function(e) {
+      data.table(V1="No data returned")
+    }, finally = {
+    })
     setnames(awsDat, c("Feature","Score","Description"))
-    awsDat[, File := basename(AWS_IMAGE_PATH)]
+    awsDat[, File := imagePath]
     
   } else if (feature=="detect-faces") {
     
     awsCall <- paste0("aws rekognition ",feature," ",
                "--image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",
                AWS_IMAGE_PATH,"\"}}'",' --attributes "ALL" --output text')
-    awsDat <- fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
-    awsDat[, File := basename(AWS_IMAGE_PATH)]
-    # awsJSON <- system(awsCall, intern=TRUE)
-    # awsJSON <- paste0(awsJSON, collapse="")
-    # awsJSON <- fromJSON(awsJSON)
-    # awsDat <- awsJSON$FaceDetails
-    # awsDat1 <- as.data.table(awsDat$Landmarks)
-    # awsDat2 <- copy(awsDat)
-    # awsDat2$Landmarks <- NULL
-    # awsDat2 <- lapply(awsDat2, function(x) unlist(x))
-    # awsDat2_Names <- names(awsDat2)
-    # awsDat2_List <- lapply(1:length(awsDat2), function(x) data.table(Type=names(awsDat2[x]), Value=awsDat2[x]))
-    # awsDat2 <- rbindlist(awsDat2_List, fill=TRUE)
-    # awsDat1[, File := basename(AWS_IMAGE_PATH)] 
-    # awsDat2[, File := basename(AWS_IMAGE_PATH)]
-    # awsDat <- list(awsDat1, awsDat2)
+    # if fread has error, it is probably empty
+    awsDat = tryCatch({
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+    }, error = function(e) {
+      data.table(V1="No data returned")
+    }, finally = {
+    })
+    awsDat[, File := imagePath]
  
   } else if (feature=="compare-faces") {
     
     awsCall <- paste0("aws rekognition ",feature," ",
                "--source-image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",AWS_IMAGE_PATH,"\"}}' ",
-               "--target-image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",AWS_IMAGE_PATH,"\"}}' ",
+               "--target-image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",AWS_IMAGE_PATH_SOURCE,"\"}}' ",
                " --output text")
-    awsDat <- fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
-    awsDat[, File1 := basename(AWS_IMAGE_PATH)]
-    awsDat[, File2 := basename(AWS_IMAGE_PATH_SOURCE)] 
+    # if fread has error, it is probably empty
+    awsDat = tryCatch({
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+    }, error = function(e) {
+      data.table(V1="No data returned")
+    }, finally = {
+    })
+    awsDat[, File1 := imagePath]
+    awsDat[, File2 := targetPath] 
     
   } else if (feature=="recognize-celebrities") {
     
     awsCall <- paste0("aws rekognition ",feature," ",
                "--image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",
                AWS_IMAGE_PATH,"\"}}'"," --output text")
-    awsDat <- fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+    # if fread has error, it is probably empty
+    awsDat = tryCatch({
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+    }, error = function(e) {
+      data.table(V1="No data returned")
+    }, finally = {
+    })
     setnames(awsDat, c("Feature","V1","V2","V3","V4"))
-    awsDat[, File := basename(AWS_IMAGE_PATH)] 
+    awsDat[, File := imagePath] 
 
   } else if (feature=="detect-moderation-labels") {
     
     awsCall <- paste0("aws rekognition ",feature," ",
                "--image '{\"S3Object\":{\"Bucket\":\"",AWS_BUCKET,"\",\"Name\":\"",
                AWS_IMAGE_PATH,"\"}}'"," --output text")
-    awsDat <- fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
-    awsDat[, File := basename(AWS_IMAGE_PATH)] 
+
+    # if fread has error, it is probably empty
+    awsDat = tryCatch({
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+    }, error = function(e) {
+      data.table(V1="No data returned")
+    }, finally = {
+    })
+    awsDat[, File := imagePath] 
     
   } else {
     stop("Feature is not available")
   }
 
-  
   # Remove Image from S3 bucket
-  if (imagePath %like% "http") {
-    RemoveTxt <- gsub(paste0("cp ",basename(imagePath)),"rm",UploadTxt)
-    RemoveSys <- system(RemoveTxt, intern=TRUE)
-  } else {
-    RemoveTxt <- paste0("aws s3 rm s3://",AWS_BUCKET,"/",AWS_IMAGE_PATH)
-    RemoveSys <- system(RemoveTxt, intern=TRUE)
+  RemoveTxt1 <- paste0("aws s3 rm s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
+  RemoveSys1 <- system(RemoveTxt1, intern=TRUE)
+  
+  # Remove target image from S3 bucket
+  if (feature=="compare-faces") {
+    RemoveTxt2 <- paste0("aws s3 rm s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH_SOURCE)
+    RemoveSys2 <- system(RemoveTxt2, intern=TRUE)
   }
 
   # Return output
