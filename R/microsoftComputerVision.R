@@ -3,15 +3,20 @@
 #' Retrieve output from Microsoft Computer Vision API
 #' @keywords image processing
 #' @param imagePath local path, url path, google storage path
+#' @param feature defaults to 'analyze'. 'analyze','handwriting'
 #' @param MICROSOFT_API_ENDPOINT defaults to Sys.getenv("MICROSOFT_API_ENDPOINT")
 #' @param MICROSOFT_API_KEY1 defaults to Sys.getenv("MICROSOFT_API_KEY1")
 #' @export
 #' @examples
-#' microsoftComputerVision(imagePath="https://sports.cbsimg.net/images/blogs/nike-football.jpg")
-#' imagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
-#' microsoftComputerVision(imagePath=imagePath)
+#' ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
+#' ImagePath2 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+#' ImagePath3 <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
+#' microsoftComputerVision(imagePath=ImagePath1, feature="analyze")
+#' microsoftComputerVision(imagePath=ImagePath2, feature="analyze")
+#' microsoftComputerVision(imagePath=ImagePath3, feature="handwriting")
 
 microsoftComputerVision <- function(imagePath, 
+                                    feature="analyze",
                                     MICROSOFT_API_ENDPOINT=Sys.getenv("MICROSOFT_API_ENDPOINT"),
                                     MICROSOFT_API_KEY1=Sys.getenv("MICROSOFT_API_KEY1")) {
 
@@ -26,87 +31,64 @@ microsoftComputerVision <- function(imagePath,
   
   # Apply different functions if image is URL or if it is a local image
   if (imagePath %like% "http") {
-    
     # Post URL using Microsoft API
     body <- paste0('{"url": "',imagePath,'"}')
-    output <- POST(API_PATH, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
-    
-        body <- paste0('{"url": "',imagePath,'"}')
-    imagePath <- "outfile-1.png"
+    outputPOST <- POST(API_PATH, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+  } else {
     txt <- (readBin(imagePath, "raw", file.info(imagePath)[1, "size"]))
-    output <- POST(API_PATH, body=txt, add_headers("Content-Type"="application/octet-stream","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
-    output$all_headers[[1]]$headers$`operation-location`
-    
-    #imagePath="http://mrthrill.com/wp-content/uploads/2013/06/reception-handwritten-note-4+-001-e1371583290109-1024x673.jpg"
-    url2 <- output$all_headers[[1]]$headers$`operation-location`
-    output2 <- GET(url2, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
-    parsed <- jsonlite::fromJSON(content(output2, "text"), simplifyVector = FALSE)
-    out1 <- lapply(parsed$recognitionResult$lines, "[[", "words")
-    
-    extractLine <- function(x) {
-      outLine <- paste0(unlist(lapply(out1[[x]], "[[", "text")), collapse = " ")
-      return(outLine)
-    }
-    outTxt <- lapply(1:length(out1), extractLine)
-    
-    # Check status codes and format
-    # status_code(output)
-    # str(output)
+    outputPOST <- POST(API_PATH, body=txt, add_headers("Content-Type"="application/octet-stream","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+  }
   
-    # Search if output returned an error or not
-    if (http_error(output)) {
-      errorCode <- status_code(output)
-      ErrorMessage <- paste0("Query returned error code ",errorCode)
-      print(ErrorMessage)
+  # Search if output returned an error or not
+  if (http_error(outputPOST)) {
+      
+    # Detect errors
+    errorCode <- status_code(outputPOST)
+    ErrorMessage <- paste0("Query returned error code ",errorCode)
+    print(ErrorMessage)
+      
+    # Return in appropriate output
+    if (feature=="analyze") {
       datTags <- data.table(name="Error",confidence=NA_real_)
       datDescriptions <- data.table(text="Error",confidence=NA_real_)
       datMeta <- data.table(width=NA_integer_,height=NA_integer_,format=NA_character_)
       outList <- list(datTags,datDescriptions,datMeta)
       names(outList) <- c("Tags","Descriptions","Meta")
+      return(outList[])
+    } else if (feature=="handwriting") {
+      outDat <- data.table(Line=NA_integer_, Text=paste0("Error= ",errorCode))
+      return(outDat)
     } else {
-      # If no error, parse output
-      parsed <- jsonlite::fromJSON(content(output, "text"), simplifyVector = FALSE)
-      datTags <- rbindlist(lapply(parsed$tags, as.data.table), fill=TRUE)
-      datDescriptions <- rbindlist(lapply(parsed$description$captions, as.data.table), fill=TRUE)
-      datMeta <- as.data.table(parsed$metadata)
-      outList <- list(datTags,datDescriptions,datMeta)
-      names(outList) <- c("Tags","Descriptions","Meta")
+      stop("Incorrect 'feature' parameter")
     }
-  } else {
-    # Apply algorithm to local file using Ruby
-    TMP_FILE <- gsub("\\s+","",gsub("[[:punct:]]","",paste0(Sys.time(),rnorm(1))))
-    TMP_FILE <- paste0(TMP_FILE,".json")
-    ScriptPath <- system.file("Scripts", "CallMicrosoft.rb", package="WanderingEye")
-    MicrosoftRubyCall <- paste0('ruby ',ScriptPath,' "',
-                                Sys.getenv("MICROSOFT_API_KEY1"),
-                                '" "',imagePath,'"',
-                                ' "',API_PATH,'"',' > ',TMP_FILE)
-    MicrosoftRubySys <- system(MicrosoftRubyCall, intern=TRUE, ignore.stderr = TRUE)
-    
-    ImageFormFile <- upload_file("outfile-1.png")
-    Output <- POST(url=API_PATH,
-                   config=list(add_headers("Content-Type"="application/json",
-                                           "Ocp-Apim-Subscription-Key"=Sys.getenv("MICROSOFT_API_KEY1")
-                                            )),
-                   body = '-data-ascii="@outfile-1.png"')
-    content(Output)
-    body <- paste0('{"data-ascii": "','"@outfile-1.png"','"}')
-    output <- POST(API_PATH, body = list(images_file=ImageFormFile), add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
-    content(output)
-
-    
-    # Read in data
-    outList <- fromJSON(TMP_FILE)
-    deleteFile <- file.remove(TMP_FILE)
-    
-    # Reorganize
-    datTags <- as.data.table(outList$tags)
-    datDescriptions <- as.data.table(outList$description$captions)
-    datMeta <- as.data.table(outList$metadata)
-    outList <- list(datTags,datDescriptions,datMeta)
-    names(outList) <- c("Tags","Descriptions","Meta")
   }
-
+  
+  if (feature=="analyze") {
+    parsed <- jsonlite::fromJSON(content(outputPOST, "text"), simplifyVector = FALSE)
+    datTags <- rbindlist(lapply(parsed$tags, as.data.table), fill=TRUE)
+    datDescriptions <- rbindlist(lapply(parsed$description$captions, as.data.table), fill=TRUE)
+    datMeta <- as.data.table(parsed$metadata)
+    outDat <- list(datTags,datDescriptions,datMeta)
+    names(outDat) <- c("Tags","Descriptions","Meta")
+  } else if (feature=="handwriting") {
+    # Extract using GET
+    operationLocation <- outputPOST$all_headers[[1]]$headers$`operation-location`
+    Sys.sleep(3)
+    outputGET <- GET(operationLocation, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+    
+    # Extract content
+    parsed <- jsonlite::fromJSON(content(outputGET, "text"), simplifyVector = FALSE)
+    out1 <- lapply(parsed$recognitionResult$lines, "[[", "words")
+    extractLine <- function(x) {
+      outLine <- paste0(unlist(lapply(out1[[x]], "[[", "text")), collapse = " ")
+      return(outLine)
+    }
+    outTxt <- lapply(1:length(out1), extractLine)
+    outDat <- rbindlist(lapply(outTxt,as.data.table), fill=TRUE)
+    outDat <- outDat[, .(Line=1:.N, Text=V1)]
+    outDat[, File := imagePath]
+  }
+  
   # Return output
-  return(outList)
+  return(outDat[])
 }

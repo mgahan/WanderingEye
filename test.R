@@ -56,3 +56,11 @@ awsRekognition(imagePath=ImagePath1, feature="detect-labels")
 awsRekognition(imagePath=ImagePath1, feature="detect-faces")
 awsRekognition(imagePath=ImagePath1, feature="recognize-celebrities")
 awsRekognition(imagePath=ImagePath1, targetPath=ImagePath2, feature="compare-faces")
+
+# Test Microsoft
+ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
+ImagePath2 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+ImagePath3 <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
+microsoftComputerVision(imagePath=ImagePath1, feature="analyze")
+microsoftComputerVision(imagePath=ImagePath2, feature="analyze")
+microsoftComputerVision(imagePath=ImagePath3, feature="handwriting")

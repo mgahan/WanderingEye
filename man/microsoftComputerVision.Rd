@@ -4,12 +4,14 @@
 \alias{microsoftComputerVision}
 \title{Retrieve output from Microsoft Computer Vision API}
 \usage{
-microsoftComputerVision(imagePath,
+microsoftComputerVision(imagePath, feature = "analyze",
   MICROSOFT_API_ENDPOINT = Sys.getenv("MICROSOFT_API_ENDPOINT"),
   MICROSOFT_API_KEY1 = Sys.getenv("MICROSOFT_API_KEY1"))
 }
 \arguments{
 \item{imagePath}{local path, url path, google storage path}
+
+\item{feature}{defaults to 'analyze'. 'analyze','handwriting'}
 
 \item{MICROSOFT_API_ENDPOINT}{defaults to Sys.getenv("MICROSOFT_API_ENDPOINT")}
 
@@ -19,9 +21,12 @@ microsoftComputerVision(imagePath,
 Retrieve output from Microsoft Computer Vision API
 }
 \examples{
-microsoftComputerVision(imagePath="https://sports.cbsimg.net/images/blogs/nike-football.jpg")
-imagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
-microsoftComputerVision(imagePath=imagePath)
+ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
+ImagePath2 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
+ImagePath3 <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
+microsoftComputerVision(imagePath=ImagePath1, feature="analyze")
+microsoftComputerVision(imagePath=ImagePath2, feature="analyze")
+microsoftComputerVision(imagePath=ImagePath3, feature="handwriting")
 }
 \keyword{image}
 \keyword{processing}
