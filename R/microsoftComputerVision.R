@@ -34,9 +34,21 @@ microsoftComputerVision <- function(imagePath,
     # Post URL using Microsoft API
     body <- paste0('{"url": "',imagePath,'"}')
     outputPOST <- POST(API_PATH, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+    
+    # Retry if error code is 429
+    if (status_code(outputPOST)==429) {
+    	Sys.sleep(3)
+    	outputPOST <- POST(API_PATH, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+    }
   } else {
     txt <- (readBin(imagePath, "raw", file.info(imagePath)[1, "size"]))
     outputPOST <- POST(API_PATH, body=txt, add_headers("Content-Type"="application/octet-stream","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+    
+    # Retry if error code is 429
+    if (status_code(outputPOST)==429) {
+    	Sys.sleep(3)
+    	outputPOST <- POST(API_PATH, body=body, add_headers("Content-Type"="application/json","Ocp-Apim-Subscription-Key"=MICROSOFT_API_KEY1))
+    }
   }
   
   # Search if output returned an error or not

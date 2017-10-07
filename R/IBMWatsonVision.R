@@ -41,16 +41,24 @@ IBMWatsonVision <- function(imagePath,
                    body = list(images_file=ImageFormFile))
   }
   
-  # Parse output
-  parsed <- jsonlite::fromJSON(content(Output, "text",encoding="UTF-8"), simplifyVector = FALSE)
-  Class <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "class")
-  Class[sapply(Class, is.null)] <- NA_character_
-  Score <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "score")
-  Score[sapply(Score, is.null)] <- NA_real_
-  Hierarchy <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "type_hierarchy")
-  Hierarchy[sapply(Hierarchy, is.null)] <- NA_character_
-  dat <- data.table(Class, Score, Hierarchy)
- 
+  # Search if output returned an error or not
+  if (http_error(Output)) {
+  	errorCode <- status_code(Output)
+  	ErrorMessage <- paste0("Query returned error code ",errorCode)
+  	print(ErrorMessage)
+  	dat <- data.table(Class=errorCode,Score=NA_real_, Hierarchy="Error")
+  } else {
+	  # Parse output
+	  parsed <- jsonlite::fromJSON(content(Output, "text",encoding="UTF-8"), simplifyVector = FALSE)
+	  Class <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "class")
+	  Class[sapply(Class, is.null)] <- NA_character_
+	  Score <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "score")
+	  Score[sapply(Score, is.null)] <- NA_real_
+	  Hierarchy <- lapply(parsed$images[[1]]$classifiers[[1]]$classes, "[[", "type_hierarchy")
+	  Hierarchy[sapply(Hierarchy, is.null)] <- NA_character_
+	  dat <- data.table(Class, Score, Hierarchy)  	
+  } 
+  
   # Return output
   return(dat[])
 }
