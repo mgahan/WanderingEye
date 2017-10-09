@@ -1,0 +1,17 @@
+---
+title: "Batch Processing"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+## Load library
+
+```{r, echo=TRUE, include=TRUE, results='hide', message=FALSE}
+# devtools::install_github("mgahan/WanderingEye")
+library(WanderingEye)
+```
+

@@ -12,7 +12,13 @@ A **R** package that allows the user to capture classification data from the fol
 
 Several vignettes exist (or will soon exist) for this package. Please check out the links:
 
-[Detect Labels Vignette](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Detect_Labels.md)
+[Detect Labels](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Detect_Labels.md)
+
+[API Setup](https://github.com/mgahan/WanderingEye/blob/master/vignettes/API_Setup.md)
+
+[Animal Trap Labeling](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Animal_Trap_Labeling.md)
+
+[Batch Processing](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Batch_Processing.md)
 
 ## API Keys
 
