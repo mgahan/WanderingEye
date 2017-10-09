@@ -10,7 +10,7 @@ library(knitr)
 
 ## Load library
 
-```{r, echo=TRUE, include=FALSE}
+```{r, echo=TRUE, include=TRUE, results='hide', message=FALSE}
 # devtools::install_github("mgahan/WanderingEye")
 library(WanderingEye)
 ```
@@ -54,7 +54,7 @@ this next step.
 SampleImage <- FileListDat[35, Filename]
 ```
 
-![alt text](https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/IMG_0095.JPG "IMG_0095.JPG")
+![IMG_0095.JPG](https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/IMG_0095.JPG "IMG_0095.JPG")
 
 
 ```{r}

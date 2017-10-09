@@ -1,6 +1,9 @@
 Load library
 ------------
 
+    # devtools::install_github("mgahan/WanderingEye")
+    library(WanderingEye)
+
 Sample files
 ------------
 
@@ -49,8 +52,7 @@ moving onto this next step.
 
     SampleImage <- FileListDat[35, Filename]
 
-![alt
-text](https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/IMG_0095.JPG "IMG_0095.JPG")
+![IMG\_0095.JPG](https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/IMG_0095.JPG "IMG_0095.JPG")
 
     GoogleOutput <- 
       googleCloudVision(
@@ -225,31 +227,31 @@ AWS Rekognition
 <tbody>
 <tr class="odd">
 <td align="left">LABELS</td>
-<td align="right">96.46908</td>
+<td align="right">96.46909</td>
 <td align="left">Animal</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="even">
 <td align="left">LABELS</td>
-<td align="right">96.46908</td>
+<td align="right">96.46909</td>
 <td align="left">Mammal</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="odd">
 <td align="left">LABELS</td>
-<td align="right">96.46908</td>
+<td align="right">96.46909</td>
 <td align="left">Zebra</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="even">
 <td align="left">LABELS</td>
-<td align="right">84.84178</td>
+<td align="right">84.84165</td>
 <td align="left">Ct Scan</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="odd">
 <td align="left">LABELS</td>
-<td align="right">84.84178</td>
+<td align="right">84.84165</td>
 <td align="left">X-Ray</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
