@@ -1,0 +1,121 @@
+---
+title: "Detect Labels"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+## Load library
+
+```{r, echo=TRUE, include=FALSE}
+# devtools::install_github("mgahan/WanderingEye")
+library(WanderingEye)
+```
+
+## Sample files
+
+In order to test the package, it is good to have a set of sample files. Feel free to use your own, but here some
+sample files that I uploaded to Google Cloud
+
+```{r}
+# Download file
+downloadURL <- "https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos.zip"
+destFile <- "SampleAnimalPhotos.zip"
+if (!file.exists(destFile)) {
+  download.file(url=downloadURL, destfile = destFile)
+}
+
+# Unzip file
+destDir <- gsub(".zip","",destFile)
+if (!dir.exists(destDir)) {
+  unzip(zipfile=destFile)
+}
+```
+
+## File explore
+
+We can first check out how many files we have available to us.
+
+```{r}
+FileListDat <- data.table(Filename=list.files(path=destDir, recursive = TRUE, full.names = TRUE))
+kable(head(FileListDat))
+```
+
+## Google Cloud Vision
+
+We can now forge ahead and attempt to detect labels of the image using Google Cloud Vision. If you have not
+gone through the process of extracting the Google Cloud Vision API keys, please do this before moving onto
+this next step.
+
+```{r}
+SampleImage <- FileListDat[35, Filename]
+```
+
+![alt text](https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/IMG_0095.JPG "IMG_0095.JPG")
+
+
+```{r}
+GoogleOutput <- 
+  googleCloudVision(
+    imagePath=SampleImage,
+    feature = "LABEL_DETECTION", 
+    numResults = 10,
+    API_KEY = Sys.getenv("GCLOUD_VISION_API_KEY"))
+
+kable(GoogleOutput[])
+```
+
+## Microsoft Computer Vision
+
+```{r}
+MicrosoftOutput <- 
+  microsoftComputerVision(
+    imagePath=SampleImage,
+    feature = "analyze",
+    MICROSOFT_API_ENDPOINT = Sys.getenv("MICROSOFT_API_ENDPOINT"),
+    MICROSOFT_API_KEY1 = Sys.getenv("MICROSOFT_API_KEY1"))
+
+kable(MicrosoftOutput$Tags[])
+kable(MicrosoftOutput$Descriptions[])
+kable(MicrosoftOutput$Meta[])
+```
+
+## AWS Rekognition
+
+```{r}
+AWSOutput <- 
+  awsRekognition(
+    imagePath=SampleImage,
+    targetPath = NULL, 
+    feature = "detect-labels",
+    AWS_ACCESS_KEY_ID = Sys.getenv("AWS_ACCESS_KEY_ID"),
+    AWS_SECRET_ACCESS_KEY = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+    AWS_BUCKET = Sys.getenv("AWS_BUCKET"),
+    AWS_DEFAULT_REGION = Sys.getenv("AWS_DEFAULT_REGION"))
+
+kable(AWSOutput[])
+```
+
+## IBM Watson Visual Recognition
+
+```{r}
+IBMOutput <-IBMWatsonVision(
+  imagePath=SampleImage, 
+  IBM_WATSON_API = Sys.getenv("IBM_WATSON_API"),
+  IBM_WATSON_VERSION = Sys.getenv("IBM_WATSON_VERSION"))
+
+kable(IBMOutput[])
+```
+
+## ClarfAI
+
+```{r}
+ClarifaiOutput <- clarifaiPredict(
+  imagePath=SampleImage, 
+  CLARIFAI_API_KEY = Sys.getenv("CLARIFAI_API_KEY"))
+
+kable(ClarifaiOutput[])
+```
