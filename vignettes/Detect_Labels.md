@@ -1,20 +1,6 @@
 Load library
 ------------
 
-    ## Loading required package: data.table
-
-    ## Loading required package: httr
-
-    ## Loading required package: RCurl
-
-    ## Loading required package: bitops
-
-    ## Loading required package: tools
-
-    ## Loading required package: stringr
-
-    ## Loading required package: jsonlite
-
 Sample files
 ------------
 
@@ -390,49 +376,49 @@ ClarfAI
 <tr class="even">
 <td align="left">ai_vfV1Zf9w</td>
 <td align="left">horizontal</td>
-<td align="right">0.9857935</td>
+<td align="right">0.9857936</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="odd">
 <td align="left">ai_SzsXMB1w</td>
 <td align="left">animal</td>
-<td align="right">0.9585371</td>
+<td align="right">0.9585370</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="even">
 <td align="left">ai_5DDJGZxT</td>
 <td align="left">skin</td>
-<td align="right">0.9446588</td>
+<td align="right">0.9446589</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="odd">
 <td align="left">ai_Zmhsv0Ch</td>
 <td align="left">outdoors</td>
-<td align="right">0.9396828</td>
+<td align="right">0.9396830</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="even">
 <td align="left">ai_XNzGRk0F</td>
 <td align="left">side view</td>
-<td align="right">0.9283557</td>
+<td align="right">0.9283558</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="odd">
 <td align="left">ai_T85WqSNl</td>
 <td align="left">camouflage</td>
-<td align="right">0.9162263</td>
+<td align="right">0.9162262</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="even">
 <td align="left">ai_43sQsmXM</td>
 <td align="left">safari</td>
-<td align="right">0.8985974</td>
+<td align="right">0.8985972</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
@@ -446,7 +432,7 @@ ClarfAI
 <tr class="even">
 <td align="left">ai_6pRrC0WT</td>
 <td align="left">danger</td>
-<td align="right">0.8656017</td>
+<td align="right">0.8656015</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
@@ -467,21 +453,21 @@ ClarfAI
 <tr class="odd">
 <td align="left">ai_SVshtN54</td>
 <td align="left">one</td>
-<td align="right">0.8491531</td>
+<td align="right">0.8491527</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="even">
 <td align="left">ai_N6BnC4br</td>
 <td align="left">mammal</td>
-<td align="right">0.8446156</td>
+<td align="right">0.8446153</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>
 <tr class="odd">
 <td align="left">ai_0Ngv01Hf</td>
 <td align="left">contrast</td>
-<td align="right">0.8444431</td>
+<td align="right">0.8444433</td>
 <td align="left">main</td>
 <td align="left">SampleAnimalPhotos/IMG_0095.JPG</td>
 </tr>

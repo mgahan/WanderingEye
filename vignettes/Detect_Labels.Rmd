@@ -10,7 +10,7 @@ library(knitr)
 
 ## Load library
 
-```{r, echo=FALSE, include=TRUE}
+```{r, echo=TRUE, include=FALSE}
 # devtools::install_github("mgahan/WanderingEye")
 library(WanderingEye)
 ```
