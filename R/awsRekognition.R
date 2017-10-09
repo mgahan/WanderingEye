@@ -52,22 +52,21 @@ awsRekognition <- function(imagePath,
   # Download source image
   if (imagePath %like% "http") {
     download.file(url=imagePath, destfile=TMP_FILE1,quiet=TRUE)
-  }
-  
-  # Download target image
-  if (feature=="compare-faces") {
-    download.file(url=targetPath, destfile=TMP_FILE2,quiet=TRUE)
+    # Download target image
+    if (feature=="compare-faces") {
+      download.file(url=targetPath, destfile=TMP_FILE2,quiet=TRUE)
+    }
   }
   
   # Upload image
   if (imagePath %like% "http") {
     AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",TMP_FILE1)
-    UploadTxt <- paste0("aws s3 mv ",TMP_FILE1," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
+    UploadTxt <- paste0("aws s3 mv '",TMP_FILE1,"' 's3://", AWS_BUCKET,"/",AWS_IMAGE_PATH,"'")
     UploadSys <- system(UploadTxt, intern=TRUE)
     #removeFile <- file.remove(TMP_FILE1)
   } else {
     AWS_IMAGE_PATH <- paste0("Images",TMP_DIR,"/",TMP_FILE1)
-    UploadTxt <- paste0("aws s3 cp ",imagePath," s3://", AWS_BUCKET,"/",AWS_IMAGE_PATH)
+    UploadTxt <- paste0("aws s3 cp '",imagePath,"' 's3://", AWS_BUCKET,"/",AWS_IMAGE_PATH,"'")
     UploadSys <- system(UploadTxt, intern=TRUE)
   }
   

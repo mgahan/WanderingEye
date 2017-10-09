@@ -23,6 +23,14 @@ awsRekognition(imagePath=ImagePath)
 clarifaiPredict(imagePath=ImagePath)
 IBMWatsonVision(imagePath=ImagePath)
 
+# Test package with local files part 2
+ImagePath <- system.file("ImageTests", "chimney rock (with space).jpg", package="WanderingEye")
+googleCloudVision(imagePath=ImagePath)
+microsoftComputerVision(imagePath=ImagePath)
+awsRekognition(imagePath=ImagePath)
+clarifaiPredict(imagePath=ImagePath)
+IBMWatsonVision(imagePath=ImagePath)
+
 # Test Google
 ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
 ImagePath2 <- "http://ohscurrent.org/wp-content/uploads/2015/09/domus-01-google.jpg"
