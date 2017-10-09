@@ -1,6 +1,20 @@
 Load library
 ------------
 
+    ## Loading required package: data.table
+
+    ## Loading required package: httr
+
+    ## Loading required package: RCurl
+
+    ## Loading required package: bitops
+
+    ## Loading required package: tools
+
+    ## Loading required package: stringr
+
+    ## Loading required package: jsonlite
+
 Sample files
 ------------
 
