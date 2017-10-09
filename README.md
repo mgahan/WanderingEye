@@ -8,6 +8,12 @@ A **R** package that allows the user to capture classification data from the fol
 - IBM Watson Visual Recognition (https://www.ibm.com/watson/services/visual-recognition/)
 - ClarifAI (https://www.clarifai.com/)
 
+## Vignettes
+
+Several vignettes exist (or will soon exist) for this package. Please check out the links:
+
+[Detect Labels Vignette](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Detect_Labels.md)
+
 ## API Keys
 
 A major component of getting results from these APIs is to go through the process of creating
