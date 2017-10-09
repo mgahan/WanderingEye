@@ -20,6 +20,8 @@ Several vignettes exist (or will soon exist) for this package. Please check out 
 
 [Batch Processing](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Batch_Processing.md)
 
+[Docker setup](https://github.com/mgahan/WanderingEye/blob/master/vignettes/Run_With_Docker.md)
+
 ## API Keys
 
 A major component of getting results from these APIs is to go through the process of creating
