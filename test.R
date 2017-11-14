@@ -5,15 +5,21 @@
 
 # Bring in package and Environmental variables
 library(WanderingEye)
-source("ENV_VARS.R")
+
+# Presentation
+ImagePath <- system.file("ImageTests", "IMG_0019.JPG", package="WanderingEye")
+Out1 <- googleCloudVision(imagePath=ImagePath, feature = "LABEL_DETECTION", numResults = 10)
+Out2 <- microsoftComputerVision(imagePath=ImagePath, feature="analyze")
+Out3 <- awsRekognition(imagePath=ImagePath, feature = "detect-labels")
+Out4 <- clarifaiPredict(imagePath=ImagePath)
+Out5 <- IBMWatsonVision(imagePath=ImagePath)
+ImagePath <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
+microsoftComputerVision(imagePath=ImagePath, feature="handwriting")
 
 # Test package with URLs
 ImagePath <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
-googleCloudVision(imagePath=ImagePath)
-microsoftComputerVision(imagePath=ImagePath)
-awsRekognition(imagePath=ImagePath)
-clarifaiPredict(imagePath=ImagePath)
-IBMWatsonVision(imagePath=ImagePath)
+ImagePath <- "https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/IMG_0007.JPG"
+ImagePath <- "https://storage.googleapis.com/mike-public-data/SampleAnimalPhotos/Cwagneri%202519-22.JPG"
 
 # Test package with local files
 ImagePath <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
@@ -69,6 +75,8 @@ awsRekognition(imagePath=ImagePath1, targetPath=ImagePath2, feature="compare-fac
 ImagePath1 <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"
 ImagePath2 <- system.file("ImageTests", "chimney_rock.jpg", package="WanderingEye")
 ImagePath3 <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
+ImagePath4 <- "https://img.buzzfeed.com/buzzfeed-static/static/enhanced/webdr02/2013/2/18/12/enhanced-buzz-26283-1361207773-3.jpg?downsize=715:*&output-format=auto&output-quality=auto"
 microsoftComputerVision(imagePath=ImagePath1, feature="analyze")
 microsoftComputerVision(imagePath=ImagePath2, feature="analyze")
 microsoftComputerVision(imagePath=ImagePath3, feature="handwriting")
+microsoftComputerVision(imagePath=ImagePath4, feature="handwriting")
