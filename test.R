@@ -7,7 +7,7 @@
 library(WanderingEye)
 
 # Presentation
-ImagePath <- system.file("ImageTests", "IMG_0019.JPG", package="WanderingEye")
+ImagePath <- system.file("ImageTests", "IMG_0019.jpeg", package="WanderingEye")
 Out1 <- googleCloudVision(imagePath=ImagePath, feature = "LABEL_DETECTION", numResults = 10)
 Out2 <- microsoftComputerVision(imagePath=ImagePath, feature="analyze")
 Out3 <- awsRekognition(imagePath=ImagePath, feature = "detect-labels")
@@ -15,6 +15,20 @@ Out4 <- clarifaiPredict(imagePath=ImagePath)
 Out5 <- IBMWatsonVision(imagePath=ImagePath)
 ImagePath <- system.file("ImageTests", "HandwrittenNote.jpg", package="WanderingEye")
 microsoftComputerVision(imagePath=ImagePath, feature="handwriting")
+ImagePath <- system.file("ImageTests", "aaron_rodgers.jpg", package="WanderingEye")
+out1 <- awsRekognition(imagePath=ImagePath, feature="recognize-celebrities")
+ImagePath <- system.file("ImageTests", "tom_wrigglesworth.png", package="WanderingEye")
+awsRekognition(imagePath=ImagePath, feature="recognize-celebrities")
+ImagePath <- system.file("ImageTests", "JimmyKimmel.png", package="WanderingEye")
+awsRekognition(imagePath=ImagePath, feature="recognize-celebrities")
+ImagePath <- system.file("ImageTests", "kimmel_lookalike.png", package="WanderingEye")
+awsRekognition(imagePath=ImagePath, feature="recognize-celebrities")
+ImagePath <- system.file("ImageTests", "BobSaget.png", package="WanderingEye")
+awsRekognition(imagePath=ImagePath, feature="recognize-celebrities")
+ImagePath <- system.file("ImageTests", "StephenColbert.png", package="WanderingEye")
+awsRekognition(imagePath=ImagePath, feature="recognize-celebrities")
+ImagePath <- system.file("ImageTests", "Constanza2.png", package="WanderingEye")
+googleCloudVision(imagePath=ImagePath, feature="SAFE_SEARCH_DETECTION")
 
 # Test package with URLs
 ImagePath <- "https://sports.cbsimg.net/images/blogs/nike-football.jpg"

@@ -92,7 +92,7 @@ awsRekognition <- function(imagePath,
                AWS_IMAGE_PATH,"\"}}'"," --output text")
     # if fread has error, it is probably empty
     awsDat = tryCatch({
-      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE, header=FALSE)
     }, error = function(e) {
       data.table(V1="No data returned")
     }, finally = {
@@ -107,7 +107,7 @@ awsRekognition <- function(imagePath,
                AWS_IMAGE_PATH,"\"}}'",' --attributes "ALL" --output text')
     # if fread has error, it is probably empty
     awsDat = tryCatch({
-      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE, header=FALSE)
     }, error = function(e) {
       data.table(V1="No data returned")
     }, finally = {
@@ -122,7 +122,7 @@ awsRekognition <- function(imagePath,
                " --output text")
     # if fread has error, it is probably empty
     awsDat = tryCatch({
-      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE, header=FALSE)
     }, error = function(e) {
       data.table(V1="No data returned")
     }, finally = {
@@ -137,7 +137,7 @@ awsRekognition <- function(imagePath,
                AWS_IMAGE_PATH,"\"}}'"," --output text")
     # if fread has error, it is probably empty
     awsDat = tryCatch({
-      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, header=FALSE, fill=TRUE)
     }, error = function(e) {
       data.table(V1="No data returned")
     }, finally = {
@@ -153,7 +153,7 @@ awsRekognition <- function(imagePath,
 
     # if fread has error, it is probably empty
     awsDat = tryCatch({
-      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE)
+      fread(paste0(awsCall," | grep -v 'ROTATE_0'"), skip=0, fill=TRUE, header=FALSE)
     }, error = function(e) {
       data.table(V1="No data returned")
     }, finally = {
